@@ -1,8 +1,13 @@
 package Yahtzee;
 
-/**
- * Created by root on 12/13/16.
- */
+import java.util.*;
+/***************************************************************************************/
+/* Scorecard.class                                                                     */
+/* Matthew Blough-Wayles                                                               */
+/* Created 12/13/16                                                                    */
+/* Edited 12/16/16                                                                     */
+/* A class to create, update, and display a Yahtzee scorecard.                         */
+/**************************************************************************************/
 public class Scorecard {
     private int ones;
     private int twos;
@@ -21,9 +26,10 @@ public class Scorecard {
     private int chance;
     private int lowerTotal;
     private int total;
+    private ArrayList<String> avail;
 
 
-    void Scorecard()
+    Scorecard()
     {
         setOnes(0);
         setTwos(0);
@@ -42,7 +48,9 @@ public class Scorecard {
         setChance(0);
         setLowerTotal(0);
         setTotal(0);
+        setAvail();
     }
+
     //Getters
     int getOnes()
     {
@@ -103,6 +111,7 @@ public class Scorecard {
     }
     int getLowerTotal() { return lowerTotal; }
     int getTotal() { return total; }
+    ArrayList<String> getAvail() { return avail; }
 
     //Setters
     void setOnes(int newVal)
@@ -173,6 +182,22 @@ public class Scorecard {
     {
         total = newVal;
     }
+    void setAvail() {
+        avail = new ArrayList<String>();
+        this.getAvail().add("Ones");
+        this.getAvail().add("Twos");
+        this.getAvail().add("Threes");
+        this.getAvail().add("Fours");
+        this.getAvail().add("Fives");
+        this.getAvail().add("Sixes");
+        this.getAvail().add("Three of a Kind");
+        this.getAvail().add("Four of a Kind");
+        this.getAvail().add("Full House");
+        this.getAvail().add("Small Straight");
+        this.getAvail().add("Large Straight");
+        this.getAvail().add("YAHTZEE!");
+        this.getAvail().add("Chance");
+    }
 
 
     //Methods
@@ -209,53 +234,186 @@ public class Scorecard {
 
     }
 
-    void fill()
-    {
-
-    }
-
-
     public void fill(Result result) {
         switch (result.getType()) {
             case "Ones":
                 this.setOnes(result.getWorth());
+                this.setUpperTotal(getUpperTotal() + result.getWorth());
+                getAvail().remove("Ones");
                 break;
             case "Twos":
                 this.setTwos(result.getWorth());
+                this.setUpperTotal(getUpperTotal() + result.getWorth());
+                getAvail().remove("Twos");
                 break;
             case "Threes":
                 this.setThrees(result.getWorth());
+                this.setUpperTotal(getUpperTotal() + result.getWorth());
+                getAvail().remove("Threes");
                 break;
             case "Fours":
                 this.setFours(result.getWorth());
+                this.setUpperTotal(getUpperTotal() + result.getWorth());
+                getAvail().remove("Fours");
                 break;
             case "Fives":
                 this.setFives(result.getWorth());
+                this.setUpperTotal(getUpperTotal() + result.getWorth());
+                getAvail().remove("Fives");
                 break;
             case "Sixes":
                 this.setSixes(result.getWorth());
+                this.setUpperTotal(getUpperTotal() + result.getWorth());
+                getAvail().remove("Sixes");
                 break;
             case "Three of a Kind":
                 this.setThreeKind(result.getWorth());
+                this.setLowerTotal(getLowerTotal() + result.getWorth());
+                getAvail().remove("Three of a Kind");
                 break;
             case "Four of a Kind":
                 this.setFourKind(result.getWorth());
+                this.setLowerTotal(getLowerTotal() + result.getWorth());
+                getAvail().remove("Four of a Kind");
                 break;
             case "Full House":
                 this.setFullHouse(result.getWorth());
+                this.setLowerTotal(getLowerTotal() + result.getWorth());
+                getAvail().remove("Full House");
                 break;
             case "Small Straight":
                 this.setSmStraight(result.getWorth());
+                this.setLowerTotal(getLowerTotal() + result.getWorth());
+                getAvail().remove("Small Straight");
                 break;
             case "Large Straight":
                 this.setLgStraight(result.getWorth());
+                this.setLowerTotal(getLowerTotal() + result.getWorth());
+                getAvail().remove("Large Straight");
                 break;
             case "YAHTZEE!":
                 this.setYahtzee(result.getWorth());
+                this.setLowerTotal(getLowerTotal() + result.getWorth());
+                getAvail().remove("YAHTZEE!");
                 break;
             case "Chance":
                 this.setChance(result.getWorth());
+                this.setLowerTotal(getLowerTotal() + result.getWorth());
+                getAvail().remove("Chance");
                 break;
         }
+        if(getUpperTotal() > 62)
+        {
+            setBonus(35);
+            setUpperTotal(getUpperTotal() + getBonus());
+        }
+        this.setTotal(getUpperTotal() + getLowerTotal());
+
+    }
+
+    public boolean check(Result result)
+    {
+        boolean used;
+
+        used = true;
+        for(String str : getAvail())
+        {
+            if (str.equals(result.getType()))
+            {
+                used = false;
+                break;
+            }
+        }
+        if(result.getType().equals("Take Zero"))
+        {
+            used = false;
+        }
+        return used;
+
+
+        /*boolean used;
+
+        used = false;
+        switch (result.getType()) {
+            case "Ones":
+                if (!(this.getOnes() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "Twos":
+                if (!(this.getTwos() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "Threes":
+                if (!(this.getThrees() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "Fours":
+                if (!(this.getFours() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "Fives":
+                if (!(this.getFives() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "Sixes":
+                if (!(this.getSixes() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "Three of a Kind":
+                if (!(this.getThreeKind() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "Four of a Kind":
+                if (!(this.getFourKind() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "Full House":
+                if (!(this.getFullHouse() == 0))
+                {
+                    used = true;
+                };
+                break;
+            case "Small Straight":
+                if (!(this.getSmStraight() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "Large Straight":
+                if (!(this.getLgStraight() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "YAHTZEE!":
+                if (!(this.getYahtzee() == 0))
+                {
+                    used = true;
+                }
+                break;
+            case "Chance":
+                if (!(this.getChance() == 0))
+                {
+                    used = true;
+                }
+                break;
+        }
+        return used; */
     }
 }
