@@ -14,6 +14,12 @@ public class Die {
     private static final int MAX = 6; //every die will have a maximum value of 6
 
 
+    void Die(int val, boolean kept)
+    {
+        this.setValue(val);
+        this.setKept(kept);
+    }
+
     void Die() //create a new die
     {
         this.setValue(1); //default value prior to roll
@@ -51,6 +57,13 @@ public class Die {
         val = rand.nextInt(MAX) + MIN;  //assign a random value between 1-6
         setValue(val);
     }
+
+    public int compareTo(Die o)
+    {
+        return(this.getValue() - o.getValue());
+    }
+
+
 
 
 }
