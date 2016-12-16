@@ -25,23 +25,23 @@ public class Scorecard {
 
     void Scorecard()
     {
-        setValue(getOnes(), 0);
-        setValue(getTwos(), 0);
-        setValue(getThrees(), 0);
-        setValue(getFours(), 0);
-        setValue(getFives(), 0);
-        setValue(getSixes(), 0);
-        setValue(getBonus(), 0);
-        setValue(getUpperTotal(), 0);
-        setValue(getThreeKind(), 0);
-        setValue(getFourKind(), 0);
-        setValue(getFullHouse(), 0);
-        setValue(getSmStraight(), 0);
-        setValue(getLgStraight(), 0);
-        setValue(getYahtzee(), 0);
-        setValue(getChance(), 0);
-        setValue(getLowerTotal(), 0);
-        setValue(getTotal(), 0);
+        setOnes(0);
+        setTwos(0);
+        setThrees(0);
+        setFours(0);
+        setFives(0);
+        setSixes(0);
+        setBonus(0);
+        setUpperTotal(0);
+        setThreeKind(0);
+        setFourKind(0);
+        setFullHouse(0);
+        setSmStraight(0);
+        setLgStraight(0);
+        setYahtzee(0);
+        setChance(0);
+        setLowerTotal(0);
+        setTotal(0);
     }
     //Getters
     int getOnes()
@@ -105,10 +105,75 @@ public class Scorecard {
     int getTotal() { return total; }
 
     //Setters
-    void setValue(int name, int newVal)
+    void setOnes(int newVal)
     {
-        name = newVal;
+        ones = newVal;
     }
+    void setTwos(int newVal)
+    {
+        twos = newVal;
+    }
+    void setThrees(int newVal)
+    {
+        threes = newVal;
+    }
+    void setFours(int newVal)
+    {
+        fours = newVal;
+    }
+    void setFives(int newVal)
+    {
+        fives = newVal;
+    }
+    void setSixes(int newVal)
+    {
+        sixes = newVal;
+    }
+    void setBonus(int newVal)
+    {
+        bonus = newVal;
+    }
+    void setUpperTotal(int newVal)
+    {
+        upperTotal = newVal;
+    }
+    void setThreeKind(int newVal)
+    {
+        threeKind = newVal;
+    }
+    void setFourKind(int newVal)
+    {
+        fourKind = newVal;
+    }
+    void setFullHouse(int newVal)
+    {
+        fullHouse = newVal;
+    }
+    void setSmStraight(int newVal)
+    {
+        smStraight = newVal;
+    }
+    void setLgStraight(int newVal)
+    {
+        lgStraight = newVal;
+    }
+    void setYahtzee(int newVal)
+    {
+        yahtzee = newVal;
+    }
+    void setChance(int newVal)
+    {
+        chance = newVal;
+    }
+    void setLowerTotal(int newVal)
+    {
+        lowerTotal = newVal;
+    }
+    void setTotal(int newVal)
+    {
+        total = newVal;
+    }
+
 
     //Methods
     void show()
@@ -144,62 +209,53 @@ public class Scorecard {
 
     }
 
-    /*
-    //Setters
-    void setOnes(int val)
+    void fill()
     {
-        ones = val;
+
     }
-    void setTwos(int val)
-    {
-        twos = val;
+
+
+    public void fill(Result result) {
+        switch (result.getType()) {
+            case "Ones":
+                this.setOnes(result.getWorth());
+                break;
+            case "Twos":
+                this.setTwos(result.getWorth());
+                break;
+            case "Threes":
+                this.setThrees(result.getWorth());
+                break;
+            case "Fours":
+                this.setFours(result.getWorth());
+                break;
+            case "Fives":
+                this.setFives(result.getWorth());
+                break;
+            case "Sixes":
+                this.setSixes(result.getWorth());
+                break;
+            case "Three of a Kind":
+                this.setThreeKind(result.getWorth());
+                break;
+            case "Four of a Kind":
+                this.setFourKind(result.getWorth());
+                break;
+            case "Full House":
+                this.setFullHouse(result.getWorth());
+                break;
+            case "Small Straight":
+                this.setSmStraight(result.getWorth());
+                break;
+            case "Large Straight":
+                this.setLgStraight(result.getWorth());
+                break;
+            case "YAHTZEE!":
+                this.setYahtzee(result.getWorth());
+                break;
+            case "Chance":
+                this.setChance(result.getWorth());
+                break;
+        }
     }
-    void setThrees(int val)
-    {
-        threes = val;
-    }
-    void setFours(int val)
-    {
-        fours = val;
-    }
-    void setFives(int val)
-    {
-        fives = val;
-    }
-    void setSixes(int val)
-    {
-        sixes = val;
-    }
-    void setBonus(int val)
-    {
-        bonus = val;
-    }
-    void setThreeKind(int val)
-    {
-        threeKind = val;
-    }
-    void setFourKind(int val)
-    {
-        fourKind = val;
-    }
-    void setFullHouse(int val)
-    {
-        fullHouse = val;
-    }
-    void setSmStraight(int val)
-    {
-        smStraight = val;
-    }
-    void setLgStraight(int val)
-    {
-        lgStraight = val;
-    }
-    void setYahtzee(int val)
-    {
-        yahtzee = val;
-    }
-    void setChance(int val)
-    {
-        chance = val;
-    } */
 }
