@@ -1,8 +1,12 @@
 package Yahtzee;
 
-/**
- * Created by root on 12/13/16.
- */
+/***************************************************************************************/
+/* main.class                                                                           */
+/* Matthew Blough-Wayles                                                               */
+/* Created 12/13/16                                                                    */
+/* Edited 12/16/16                                                                     */
+/* Play a game of Yahtzee!                                                             */
+/**************************************************************************************/
 public class main {
 
     public static void main(String[] args) {
@@ -26,15 +30,11 @@ public class main {
         hand1.getHand()[0].setKept(true);
         hand1.calcResults(); */
 
-        while (true) {
-            Hand hand1 = new Hand();
-            //lScorecard sc = new Scorecard();
+        Scorecard sc = new Scorecard();
+        Hand hand1 = new Hand(sc);
 
-            hand1.deal();
-            hand1.roll();
-            hand1.roll();
-            hand1.roll();
+        hand1.deal();
+        hand1.roll();
             //sc.show();
         }
    }
-}

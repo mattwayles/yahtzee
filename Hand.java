@@ -4,7 +4,7 @@ import java.util.*;
  * Hand.class
  * Matthew Blough-Wayles
  * Created 12/13/16
- * Edited 12/14/16
+ * Edited 12/16/16
  * Manage a hand of 5 dice
  */
 public class Hand {
@@ -13,8 +13,20 @@ public class Hand {
     private int sum;
     private ArrayList<Result> myChoices;
     private Scorecard sc;
+    private boolean takeZero;
+    private String prompt;
 
 
+    Hand(Scorecard card) //Initialize a new hand of 5 dice
+    {
+        this.setHand(new Die[5]);
+        this.setChoices(new ArrayList<Result>());
+        this.setRolls(0);
+        this.setSum(0);
+        this.setScorecard(card);
+        this.setTakeZero(false);
+        this.setPrompt("");
+    }
     Hand() //Initialize a new hand of 5 dice
     {
         this.setHand(new Die[5]);
@@ -22,6 +34,8 @@ public class Hand {
         this.setRolls(0);
         this.setSum(0);
         this.setScorecard(new Scorecard());
+        this.setTakeZero(false);
+        this.setPrompt("");
     }
 
     //Getters
@@ -33,6 +47,8 @@ public class Hand {
     protected int getRolls() { return myRolls; }
     protected int getSum() { return sum; }
     protected Scorecard getScorecard() { return sc; }
+    protected boolean getTakeZero() { return takeZero; }
+    protected String getPrompt() { return prompt; }
 
     //Setters
     protected void setChoices(ArrayList<Result> init) { myChoices = init; }
@@ -43,6 +59,8 @@ public class Hand {
     protected void setRolls(int init) { myRolls = init; }
     protected void setSum(int num) { sum = num; }
     protected void setScorecard(Scorecard score) { sc = score; }
+    protected void setTakeZero(boolean zero) { takeZero = zero; }
+    protected void setPrompt(String str) { prompt = str; }
 
 
     //Methods
@@ -60,26 +78,30 @@ public class Hand {
             if (!die.getKept()) {
                 die.roll();
             }
+            die.setKept(false);
             System.out.print(die.getValue() + " ");
         }
         System.out.println();
         if (!(getRolls() == 3)) {
-            System.out.print("Keep: " );
+            setPrompt("Keep: ");
             this.getInput();
         }
         else {
-        this.calcResults();
-        this.listResults();
-            System.out.print("Select a Result: " );
-        this.getInput();
+            this.setRolls(0);
+            this.calcResults();
+            this.listResults();
+            setPrompt("Select a Result: ");
+            this.getInput();
         }
     }
 
     void getInput()
     {
+        System.out.print(getPrompt());
         Scanner reader;
         reader = new Scanner(System.in);
         keep(reader.nextLine());
+        reader.close();
     }
 
     void keep(String keepers)
@@ -87,15 +109,53 @@ public class Hand {
         String[] strArr;
         int i;
 
+
         strArr = keepers.split("\\s+");
         for(i=0;i<strArr.length; i++)
         {
-            if (!getChoices().isEmpty())
-            {
-                getScorecard().fill(getChoices().get(Integer.parseInt(strArr[i]) - 1));
-                getScorecard().show();
+            if (!getChoices().isEmpty()) { //If choices have been populated
+                if (strArr[0].equals(""))
+                {
+                    System.out.println("No selection made. Try again.");
+                    this.getInput();
+                }
+                //If user selects Take Zero
+                if (this.getChoices().get(Integer.parseInt(strArr[i]) - 1).getType().equals("Take Zero"))
+                {
+                    this.setTakeZero(true);
+                    this.getChoices().clear();
+                    this.setSum(0);
+                    this.setZero();
+
+                }
+                else {
+                    //If user selects a viable option
+                    this.getScorecard().fill(getChoices().get(Integer.parseInt(strArr[i]) - 1));
+                    this.getScorecard().show();
+                    this.getChoices().clear();
+                    this.setSum(0);
+                }
             }
-            getHand()[Integer.parseInt(strArr[i]) - 1].setKept(true);
+            if (getTakeZero() == true) // ifzero selection was made
+            {
+                if (strArr[0].equals(""))
+                {
+                    System.out.println("No selection made. Try again.");
+                    this.getInput();
+                }
+                getScorecard().getAvail().remove(Integer.parseInt(strArr[i]) - 1);
+                setTakeZero(false);
+            }
+            else if (!strArr[i].isEmpty()){
+                getHand()[Integer.parseInt(strArr[i]) - 1].setKept(true);
+            }
+        }
+        if (getScorecard().getAvail().size() > 0) {
+            this.roll();
+        }
+        else
+        {
+            getScorecard().show();
         }
     }
 
@@ -144,6 +204,7 @@ public class Hand {
     {
         int i;
         int incNum;
+        Result res;
 
         //Upper Level
         incNum = 0;
@@ -154,6 +215,7 @@ public class Hand {
                 }
             }
             if (incNum > 0) {
+
                 getChoices().add(new Result(this.intConvert(i), incNum));
             }
             incNum = 0;
@@ -194,11 +256,13 @@ public class Hand {
 
         this.sortPattern(pattern);
         try {
-            if(pattern.size() > 2) {
-                if (pattern.get(0).getValue() == pattern.get(2).getValue()) {
-                    this.getChoices().add(new Result("Three of a Kind", getSum()));
-                } else if (pattern.get(2).getValue() == pattern.get(4).getValue()) {
-                    this.getChoices().add(new Result("Three of a Kind", getSum()));
+            if (pattern.size() > 4) //FullHouse, Yahtzee
+            {
+                if (pattern.get(0).getValue() == pattern.get(4).getValue()) { //Yahtzee
+                    this.getChoices().add(new Result("YAHTZEE!", 50));
+                }
+                else { //Full House
+                    this.getChoices().add(new Result("Full House", 25));
                 }
             }
             if (pattern.size() > 3) //Four of a Kind
@@ -207,13 +271,11 @@ public class Hand {
                     this.getChoices().add(new Result("Four of a Kind", getSum()));
                 }
             }
-            if (pattern.size() > 4) //FullHouse, Yahtzee
-            {
-                if (pattern.get(0).getValue() == pattern.get(4).getValue()) { //Yahtzee
-                    this.getChoices().add(new Result("YAHTZEE!", 50));
-                }
-                else { //Full House
-                    this.getChoices().add(new Result("Full House", 25));
+            if(pattern.size() > 2) {
+                if (pattern.get(0).getValue() == pattern.get(2).getValue()) {
+                    this.getChoices().add(new Result("Three of a Kind", getSum()));
+                } else if (pattern.get(2).getValue() == pattern.get(4).getValue()) {
+                    this.getChoices().add(new Result("Three of a Kind", getSum()));
                 }
             }
         } catch(IndexOutOfBoundsException ex) {}
@@ -282,10 +344,28 @@ public class Hand {
     void listResults()
     {
         this.sortResults(getChoices());
-        for(int i=0; i< getChoices().size(); i++)
-        {
-            getChoices().get(i).display(i + 1);
+        for(int i=0; i< getChoices().size(); i++) {
+        if (getScorecard().check(getChoices().get(i))) {
+                getChoices().remove(i);
+            }
         }
+        this.getChoices().add(new Result("Take Zero", 0));
+        for(int i=0; i< getChoices().size(); i++) {
+            if (!getScorecard().check(getChoices().get(i))) {
+                getChoices().get(i).display(i + 1);
+
+            }
+        }
+    }
+
+    void setZero()
+    {
+        for(int i = 0; i< getScorecard().getAvail().size(); i++)
+        {
+            System.out.println(i+1 + ") " + getScorecard().getAvail().get(i));
+        }
+        setPrompt("Take Zero on: ");
+        this.getInput();
     }
 
 }
